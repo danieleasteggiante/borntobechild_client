@@ -1,3 +1,25 @@
+<script lang="ts">
+import {Options, Vue} from 'vue-class-component';
+import {GOOGLE_ENDPOINT_OAUTH, GOOGLE_OAUTH_REDIRECT_URI} from "@/config/constant";
+
+@Options({})
+export default class Navbar extends Vue {
+  loginWithGoogle() {
+    const googleAuthUrl = GOOGLE_ENDPOINT_OAUTH + '?' +
+      'scope=https://www.googleapis.com/auth/cloud-platform ' +
+      'https://www.googleapis.com/auth/userinfo.profile ' +
+      'https://www.googleapis.com/auth/userinfo.email&' +
+      'include_granted_scopes=true&' +
+      'response_type=code&' +
+      'access_type=offline&' +
+      'redirect_uri=' + GOOGLE_OAUTH_REDIRECT_URI + '&' +
+      'client_id='+ process.env.GOOGLE_OAUTH_CLIENT_ID;
+
+    window.open(googleAuthUrl, '_blank', 'width=500,height=600');
+  }
+}
+</script>
+
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -25,24 +47,15 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/contatti">Contatti</router-link>
           </li>
+
         </ul>
+        <button class="btn btn-primary ms-auto" @click="loginWithGoogle">Login con Google</button>
       </div>
     </div>
+
+
   </nav>
 </template>
-
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-
-@Options({
-  props: {
-    msg: String,
-  },
-})
-export default class HelloWorld extends Vue {
-  msg!: string
-}
-</script>
 
 <style scoped>
 /* Aggiungi eventuali stili specifici per la barra di navigazione */

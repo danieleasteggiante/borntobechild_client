@@ -28,7 +28,7 @@ export default class CategoryButtons extends Vue {
   }
 
   private async recuperaSezioni() {
-    const endpoint = API_URL + 'classifiche/category';
+    const endpoint = API_URL + 'classifiche/category/all/';
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;

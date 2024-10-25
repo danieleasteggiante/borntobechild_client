@@ -5,6 +5,7 @@ import {Options, Vue} from 'vue-class-component';
 import HomeBanner from "@/components/HomeBanner.vue";
 import Section from "@/components/classifiche/Section.vue";
 import axios from "axios";
+import {API_URL} from "@/config/constant";
 
 @Options({
   components: {Section, HomeBanner}
@@ -18,7 +19,7 @@ export default class Home extends Vue {
   }
 
   private async  recuperaSezioni() {
-    const endpoint = 'http://localhost:8000/api/home/section/all';
+    const endpoint = API_URL + 'home/sections/';
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;

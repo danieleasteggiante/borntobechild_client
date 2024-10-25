@@ -59,7 +59,7 @@ export default class RankingElement extends Vue {
 <template>
   <div class="ranking-item" @click="navigateToDetail">
     <img :src="photoUrl" alt="Photo" class="photo" />
-    <div class="rank">{{ rank + 1 }}</div>
+    <div class="rank">{{ rank }}</div>
     <div class="name">{{ name }}</div>
     <div class="description">{{ truncatedDescription }}</div>
     <div class="score">{{ score }}</div>

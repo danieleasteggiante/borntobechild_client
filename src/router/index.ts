@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import {createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw} from 'vue-router';
 import Home from '@/components/Home.vue';
 import About from '@/components/About.vue';
 import Classifiche from '@/components/Classifiche.vue';
@@ -6,6 +6,7 @@ import RankingList from '@/components/classifiche/RankingList.vue';
 import ElementDetail from "@/components/classifiche/ElementDetail.vue";
 import BlogList from "@/components/blog/BlogList.vue";
 import ArticleDetail from "@/components/blog/ArticleDetail.vue";
+import GoogleCallback from "@/components/googleOauth2/GoogleCallback.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -54,10 +55,15 @@ const routes: Array<RouteRecordRaw> = [
     component: ArticleDetail,
     props: true // Passa il parametro come props al componente
   },
+  {
+    path: '/oauth/google/callback',
+    name: 'GoogleCallback',
+    component: GoogleCallback,
+  },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 
