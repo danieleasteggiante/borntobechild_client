@@ -14,11 +14,14 @@ export default class RankingList extends Vue {
   fetchedData: any[] = [];
   errorMessage = '';
   slug = '';
-  comments: any[] = []
+  commentUrl = '';
+  commentFetched = [];
+  isCommentFetched = false;
 
   mounted() {
     const route = useRoute();
     this.slug = route.fullPath.split('/').pop() as string;
+    this.commentUrl = API_URL + 'classifiche/comment/' + this.slug + '/';
     this.recuperaClassifica();
     this.recuperaCommenti();
   }
@@ -35,11 +38,11 @@ export default class RankingList extends Vue {
   }
 
   async recuperaCommenti() {
-    const endpoint = API_URL + 'classifiche/comment/' + this.slug + '/';
+    const endpoint = API_URL + 'comments/classifica/' + this.slug + '/';
     try {
       const response = await axios.get(endpoint);
-      this.comments = response.data;
-      console.log(this.comments);
+      this.commentFetched = response.data;
+      this.isCommentFetched = true;
     } catch (error) {
       this.errorMessage = 'Errore nel recupero dei commenti ' + error + ' ' + endpoint;
     }
@@ -60,7 +63,7 @@ export default class RankingList extends Vue {
       :category="this.slug"
       :photo-url="ranking.image"
     />
-   <CommentsContainer comments={{this.comments}} />
+    <CommentsContainer v-if="this.slug" :commentType="'classifica'" :reference="this.slug"  />
   </div>
 
 </template>

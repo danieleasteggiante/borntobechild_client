@@ -1,21 +1,50 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {GOOGLE_ENDPOINT_OAUTH, GOOGLE_OAUTH_REDIRECT_URI} from "@/config/constant";
+import {GOOGLE_OAUTH_REQUEST} from "@/config/constant";
+import {mapMutations} from 'vuex';
+import {getCookie, setCookie} from "@/components/utils/CookieUtils";
 
-@Options({})
+@Options({
+  methods: {
+    ...mapMutations(['setIsLogged', 'setAccessToken'])
+  }
+})
 export default class Navbar extends Vue {
-  loginWithGoogle() {
-    const googleAuthUrl = GOOGLE_ENDPOINT_OAUTH + '?' +
-      'scope=https://www.googleapis.com/auth/cloud-platform ' +
-      'https://www.googleapis.com/auth/userinfo.profile ' +
-      'https://www.googleapis.com/auth/userinfo.email&' +
-      'include_granted_scopes=true&' +
-      'response_type=code&' +
-      'access_type=offline&' +
-      'redirect_uri=' + GOOGLE_OAUTH_REDIRECT_URI + '&' +
-      'client_id='+ process.env.GOOGLE_OAUTH_CLIENT_ID;
+  isLogged = false;
+  userInfo: any = {};
+  setIsLogged!: (payload: boolean) => void;
+  setAccessToken!: (payload: string) => void;
 
-    window.open(googleAuthUrl, '_blank', 'width=500,height=600');
+
+  mounted() {
+    try {
+      this.getUser(getCookie('user_info'));
+    } catch (e) {
+      console.error('Cookie non presente', e);
+    }
+  }
+
+  getUser(data: any) {
+    this.userInfo = data;
+    this.isLogged = this.userInfo['is_logged'];
+    console.log('isLogged', this.isLogged);
+    this.setIsLogged(this.isLogged);
+    this.setAccessToken(this.userInfo['access_token']);
+  }
+
+  handleLoginData(event: any) {
+    if (event.origin !== "http://localhost:8080" || event.data.type === "webpackClose")
+      return;
+    console.log('Ricevuto messaggio', event.data);
+    setCookie('user_info', event.data);
+    console.log('Cookie impostato', getCookie('user_info'));
+    this.getUser(getCookie('user_info'));
+    this.$router.push('/profile');
+  }
+
+  loginWithGoogle() {
+    window.open(GOOGLE_OAUTH_REQUEST, '_blank', 'width=500,height=600');
+    window.addEventListener('message', this.handleLoginData, false);
   }
 }
 </script>
@@ -47,9 +76,13 @@ export default class Navbar extends Vue {
           <li class="nav-item">
             <router-link class="nav-link" to="/contatti">Contatti</router-link>
           </li>
-
+          <li v-if="isLogged" class="nav-item">
+            <router-link class="nav-link" to="/profile">Profilo</router-link>
+          </li>
         </ul>
-        <button class="btn btn-primary ms-auto" @click="loginWithGoogle">Login con Google</button>
+        <button v-if="!isLogged" class="btn btn-primary ms-auto" @click="loginWithGoogle">Login con
+          Google
+        </button>
       </div>
     </div>
 

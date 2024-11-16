@@ -1,15 +1,17 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import IComment from "@/components/interfaces/IComment";
+import {PropType} from "vue";
 @Options({
   props: {
     comment: {
-      type: Object,
+      type:  Object as PropType<IComment>,
       required: true
     }
   }
 })
 export default class CommentDetail extends Vue {
-  comment!: any;
+  comment!: IComment;
 
   mounted() {
     console.log('Comment mounted', this.comment);
@@ -20,7 +22,7 @@ export default class CommentDetail extends Vue {
 
 <template>
   <div class="comment">
-    <p><strong>{{ this.comment.name }}</strong>: {{ this.comment.content }}</p>
+    <p><strong>{{ this.comment.author }}</strong>: {{ this.comment.content }}</p>
   </div>
 </template>
 

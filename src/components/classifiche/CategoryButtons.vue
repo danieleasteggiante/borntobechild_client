@@ -32,9 +32,10 @@ export default class CategoryButtons extends Vue {
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;
-      await this.createCategoryButtons(this.ROW_SIZE);
+      this.createCategoryButtons(this.ROW_SIZE);
     } catch (error) {
       this.errorMessage = 'Errore nel recupero dei dati';
+      console.error(this.errorMessage, error);
     }
   }
 

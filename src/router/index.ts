@@ -7,7 +7,7 @@ import ElementDetail from "@/components/classifiche/ElementDetail.vue";
 import BlogList from "@/components/blog/BlogList.vue";
 import ArticleDetail from "@/components/blog/ArticleDetail.vue";
 import GoogleCallback from "@/components/googleOauth2/GoogleCallback.vue";
-
+import Profile from "@/components/utente/Profile.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -60,6 +60,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'GoogleCallback',
     component: GoogleCallback,
   },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+  }
 ];
 
 const router = createRouter({

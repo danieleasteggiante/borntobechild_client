@@ -11,8 +11,8 @@ import CommentsContainer from "@/components/comments/CommentsContainer.vue";
 })
 export default class ArticleDetail extends Vue {
   errorMessage = '';
-  fetchedData: any[] = [];
   id = '';
+  fetchedData: any[] = [];
   isDataFetched = false;
 
   mounted() {
@@ -31,6 +31,7 @@ export default class ArticleDetail extends Vue {
       this.errorMessage = 'Errore nel recupero dei dati ' + error + ' ' + endpoint;
     }
   }
+
 }
 </script>
 
@@ -53,7 +54,7 @@ export default class ArticleDetail extends Vue {
         </div>
       </div>
     </div>
-    <CommentsContainer v-if="isDataFetched" :comments="this.fetchedData.comments" />
+    <CommentsContainer v-if="this.id" :commentType="'blog'" :reference="this.id"  />
   </div>
 </template>
 
