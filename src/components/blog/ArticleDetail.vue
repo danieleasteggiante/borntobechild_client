@@ -3,13 +3,17 @@ import {Options, Vue} from 'vue-class-component';
 import axios from "axios";
 import {API_URL} from "@/config/constant";
 import {useRoute} from "vue-router";
+import CommentsContainer from "@/components/comments/CommentsContainer.vue";
 
 
-@Options({})
+@Options({
+  components: {CommentsContainer}
+})
 export default class ArticleDetail extends Vue {
   errorMessage = '';
-  fetchedData: any[] = [];
   id = '';
+  fetchedData: any[] = [];
+  isDataFetched = false;
 
   mounted() {
     const route = useRoute();
@@ -22,22 +26,23 @@ export default class ArticleDetail extends Vue {
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;
+      this.isDataFetched = true;
     } catch (error) {
       this.errorMessage = 'Errore nel recupero dei dati ' + error + ' ' + endpoint;
     }
   }
+
 }
 </script>
 
 <template>
   <div class="element-detail-container">
     <div class="element-detail">
-      <img :src="this.fetchedData.image" alt="Banner" class="banner"/>
+      <img :src="this.fetchedData.banner" alt="Banner" class="banner"/>
       <h1 class="title">{{ this.fetchedData.title }}</h1>
       <h2 class="title">{{ this.fetchedData.subtitle }}</h2>
       <hr>
       <p>{{this.fetchedData.content}}</p>
-      <p class="body">{{ this.fetchedData.description }}</p>
       <div v-for="(section, index) in this.fetchedData.sections" :key="section.id" :class="{'section-alternate': index % 2 !== 0}">
         <hr>
         <div class="section-content">
@@ -49,6 +54,7 @@ export default class ArticleDetail extends Vue {
         </div>
       </div>
     </div>
+    <CommentsContainer v-if="this.id" :commentType="'blog'" :reference="this.id"  />
   </div>
 </template>
 

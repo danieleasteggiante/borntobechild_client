@@ -28,13 +28,14 @@ export default class CategoryButtons extends Vue {
   }
 
   private async recuperaSezioni() {
-    const endpoint = API_URL + 'classifiche/category';
+    const endpoint = API_URL + 'classifiche/category/all/';
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;
-      await this.createCategoryButtons(this.ROW_SIZE);
+      this.createCategoryButtons(this.ROW_SIZE);
     } catch (error) {
       this.errorMessage = 'Errore nel recupero dei dati';
+      console.error(this.errorMessage, error);
     }
   }
 

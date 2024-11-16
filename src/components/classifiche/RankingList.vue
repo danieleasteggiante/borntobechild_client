@@ -5,25 +5,29 @@ import axios from "axios";
 import {API_URL} from "@/config/constant";
 import {useRoute} from "vue-router";
 import RankingElement from "@/components/classifiche/RankingElement.vue";
+import CommentsContainer from "@/components/comments/CommentsContainer.vue";
 
 @Options({
-  components: {RankingElement},
+  components: {CommentsContainer, RankingElement},
 })
 export default class RankingList extends Vue {
   fetchedData: any[] = [];
   errorMessage = '';
   slug = '';
-  comments: any[] = []
+  commentUrl = '';
+  commentFetched = [];
+  isCommentFetched = false;
 
   mounted() {
     const route = useRoute();
     this.slug = route.fullPath.split('/').pop() as string;
+    this.commentUrl = API_URL + 'classifiche/comment/' + this.slug + '/';
     this.recuperaClassifica();
     this.recuperaCommenti();
   }
 
   async recuperaClassifica() {
-    const endpoint = API_URL + 'classifiche/element/category/' + this.slug + '/';
+    const endpoint = API_URL + 'classifiche/ranking/' + this.slug + '/';
     try {
       const response = await axios.get(endpoint);
       this.fetchedData = response.data;
@@ -34,11 +38,11 @@ export default class RankingList extends Vue {
   }
 
   async recuperaCommenti() {
-    const endpoint = API_URL + 'classifiche/comment/' + this.slug + '/';
+    const endpoint = API_URL + 'comments/classifica/' + this.slug + '/';
     try {
       const response = await axios.get(endpoint);
-      this.comments = response.data;
-      console.log(this.comments);
+      this.commentFetched = response.data;
+      this.isCommentFetched = true;
     } catch (error) {
       this.errorMessage = 'Errore nel recupero dei commenti ' + error + ' ' + endpoint;
     }
@@ -52,19 +56,14 @@ export default class RankingList extends Vue {
       v-for="ranking in fetchedData"
       :key="ranking.id"
       :id="ranking.id"
-      :rank="ranking.ranking"
+      :rank="ranking.rank"
       :name="ranking.name"
       :score="ranking.score"
       :description="ranking.description"
       :category="this.slug"
       :photo-url="ranking.image"
     />
-    <div class="comments-section">
-      <h2>Comments</h2>
-      <div v-for="comment in comments" :key="comment.id" class="comment">
-        <p><strong>{{ comment.author }}</strong>: {{ comment.content }}</p>
-      </div>
-    </div>
+    <CommentsContainer v-if="this.slug" :commentType="'classifica'" :reference="this.slug"  />
   </div>
 
 </template>
@@ -79,20 +78,5 @@ export default class RankingList extends Vue {
   background-color: white;
 }
 
-.comments-section {
-  width: 60%;
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f0f0f0; /* Light gray background */
-}
 
-.comment {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-}
 </style>
